@@ -4,9 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faThumbsDown, faThumbsUp, faThumbs, faImage, faMoneyCheckAlt, faSearchDollar} from '@fortawesome/free-solid-svg-icons'
 class App extends Component {
     state = {
-        isLoading: false,
+        isLoading: true,
         invoices: [
-            {
+            /*{
                 "id": "100",
                 "Vendor": "Bini",
                 "Amount": "$12,000",
@@ -33,32 +33,44 @@ class App extends Component {
                 "Amount": "$12,000",
                 "Invoice": "1526",
                 "Date": "09/09/2021"
-            },
+            },*/
         ]
     }
+
+   
+
+    async componentDidMount(){
+        const apiurl = process.env.REACT_APP_INVOICE_API_URL;
+        console.log(apiurl);
+        const response = await fetch(apiurl);
+        const body = await response.json();
+        this.setState({invoices: body, isLoading: false})
+        console.log(this.state.invoices)
+    }
+
     remove(id){
-        let updatedInvoices = [...this.state.invoices].filter (i => i.id !== id)
+        let updatedInvoices = [...this.state.invoices].filter (i => i.Id !== id)
         this.setState({invoices: updatedInvoices});
     }
+
     render() {
         const isLoading = this.state.isLoading;
         const allinvoices = this.state.invoices;
-
         
         if (isLoading)
             return (<div>Loading...</div>)
 
         let invoices = allinvoices.map( invoice => 
-            <tr key={invoice.id}>
+            <tr key={invoice.Id}>
                 <td>{invoice.Vendor}</td>
                 <td>{invoice.Amount}</td>
                 <td>{invoice.Invoice}</td>
                 <td>{invoice.Date}</td>
-                <td><Button className="btn btn-lg btn-success" onClick={() => this.remove(invoice.id)}> <FontAwesomeIcon icon={faThumbsUp}/>OK</Button></td>
-                <td><Button className="btn btn-lg btn-danger" onClick={() => this.remove(invoice.id)} ><FontAwesomeIcon icon={faThumbsDown}/>NOK</Button></td>
-                <td><Button className="btn btn-lg btn-info" onClick={() => this.remove(invoice.id)} ><FontAwesomeIcon icon={faMoneyCheckAlt}/>50%</Button></td>
-                <td><Button className="btn btn-lg btn-warning" onClick={() => this.remove(invoice.id)} ><FontAwesomeIcon icon={faSearchDollar}/>??</Button></td>
-                <td><Button className="btn btn-lg btn-info" onClick={() => this.remove(invoice.id)} ><FontAwesomeIcon icon={faImage}/>Image</Button></td>
+                <td><Button className="btn btn-lg btn-success" onClick={() => this.remove(invoice.Id)}> <FontAwesomeIcon icon={faThumbsUp}/>OK</Button></td>
+                <td><Button className="btn btn-lg btn-danger" onClick={() => this.remove(invoice.Id)} ><FontAwesomeIcon icon={faThumbsDown}/>NOK</Button></td>
+                <td><Button className="btn btn-lg btn-info" onClick={() => this.remove(invoice.Id)} ><FontAwesomeIcon icon={faMoneyCheckAlt}/>50%</Button></td>
+                <td><Button className="btn btn-lg btn-warning" onClick={() => this.remove(invoice.Id)} ><FontAwesomeIcon icon={faSearchDollar}/>??</Button></td>
+                <td><Button className="btn btn-lg btn-info" onClick={() => this.remove(invoice.Id)} ><FontAwesomeIcon icon={faImage}/>Image</Button></td>
                 
                 
             </tr>
@@ -87,7 +99,7 @@ class App extends Component {
                             </thead>
 
                             <tbody>
-                                {this.state.invoices.length === 0 ? <td colSpan="9">All Caught up!</td> : invoices}
+                                {this.state.invoices.length === 0 ? <tr ><td colSpan="9">All Caught up!</td></tr> : invoices}
                             </tbody>
                         </Table>
                     </div>
